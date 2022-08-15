@@ -1,0 +1,12 @@
+backend
++amazon scraper
++ebay scraper
+-facebook scraper
+-mercari scraper
+-django api
+
+frontend
+-react frontend
+-google chrome
+
+database
