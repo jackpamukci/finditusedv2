@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def search_facebook(item, kac):
+def search_mercari(item, kac):
     driver = webdriver.Chrome(ChromeDriverManager().install())
     url = f"https://www.mercari.com/search/?keyword={item}"
 
@@ -22,7 +22,7 @@ def search_facebook(item, kac):
         picture = driver.find_elements(By.XPATH, "//div[@data-testid='StyledProductThumb']")
         link = driver.find_element(By.XPATH, "//div[@data-testid='SearchResults']")
 
-        for i in range(kac):
+        for i in range(int(kac)):
             data.append({
                 'title' : title[i].text,
                 'price' : price[i].find_element(By.CSS_SELECTOR, 'span').text,
@@ -39,7 +39,10 @@ def search_facebook(item, kac):
             'link' : link
         })
 
-    print(data)
+    return data
+
+
+print(search_mercari('iphone', 3))
 
 
 

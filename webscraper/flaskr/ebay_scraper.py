@@ -15,8 +15,8 @@ def add_plus(keywords):
     return keyword_edited
 
 
-def search_ebay(item, kac):
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+def search_ebay(item, kac, dri):
+    driver = dri
     plusified_keyword = add_plus(item)
     url = "https://www.ebay.com/sch/i.html?_nkw=" + plusified_keyword
 
@@ -32,7 +32,7 @@ def search_ebay(item, kac):
         picture = driver.find_elements(By.CLASS_NAME, 's-item__image-img')
         link = driver.find_elements(By.CLASS_NAME, 's-item__link')
 
-        for i in range(kac):
+        for i in range(int(kac)):
             data.append({
                 'title' : title[i + 1].text,
                 'price' : price[i + 1].text,

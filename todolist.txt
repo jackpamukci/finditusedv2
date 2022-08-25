@@ -1,9 +1,10 @@
 backend
-+amazon scraper
++amazon info grabber
 +ebay scraper
--facebook scraper
--mercari scraper
--django api
++mercari scraper
++amazon scraper
+//walmart scraper aint work fuck em
++flask rest api
 
 frontend
 -react frontend

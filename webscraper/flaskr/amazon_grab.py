@@ -4,19 +4,32 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 
 # comments for fuckery
 
-def search_amazon():
-    driver = webdriver.Chrome(ChromeDriverManager().install())
-    driver.get('https://www.amazon.com/FIFA-22-PlayStation-4/dp/B098KVCFM8')
+def grab_amazon(url):
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--window-size=1420,1080")
+    chrome_options.add_argument("--disable-gpu")
+
+
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+    driver.get(url)
     driver.implicitly_wait(1)
 
     try:
         prod_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').text
     except NoSuchElementException:
-        print('title not found')
+        prod_title = 'no title found'
+
+    try:
+        prod_price = driver.find_element(By.XPATH, '//*[@id="priceblock_ourprice"]').text
+    except NoSuchElementException:
+        prod_price = 'price not found'
 
     try:
         prod_picture = driver.find_element(By.XPATH, '//*[@id="landingImage"]').get_attribute("src")
@@ -27,8 +40,9 @@ def search_amazon():
 
     return {
         "title" : prod_title,
+        "price" : prod_price,
         "picture": prod_picture
     }
 
-search_amazon()
+
 
