@@ -1,49 +1,37 @@
-# Imports
+import os
+import asyncio
+import time
 
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
+import aiohttp
 
+from aioselenium import Remote, Keys
 
-def search_mercari(item, kac):
-    driver = webdriver.Chrome(ChromeDriverManager().install())
-    url = f"https://www.mercari.com/search/?keyword={item}"
+async def scraper(search):
+    capabilities = {
+            "browserName": "firefox",
+        }
 
+    command_executor = os.getenv('SELENIUM_CLUSTER')
 
-    driver.get(url)
-    driver.implicitly_wait(0.5)
+    async with aiohttp.ClientSession() as session:
+        remote = await Remote.create(str(command_executor), capabilities, session)
+        async with remote as driver:
+            await driver.set_window_size(1920, 1080)
+            await driver.get("http://www.youtube.com")
+            print('Loaded:',await driver.get_title())
+            element = await driver.find_element_by_xpath('//input[@id="search"]')
+            await element.send_keys(search, Keys.ENTER)
+            video_titles = await driver.find_elements_by_xpath('//a[@id="video-title"]')
+            for i, video_title in enumerate(video_titles):
+                print(search, 'Search Result', i, await video_title.text())
 
-    data = []
+async def main(search_fields):
+    await asyncio.gather(*[scraper(search) for search in search_fields])
 
-    try:
-        title = driver.find_elements(By.XPATH, "//div[@data-testid='ItemName']")
-        price = driver.find_elements(By.XPATH, "//p[@data-testid='ItemPrice']")
-        picture = driver.find_elements(By.XPATH, "//div[@data-testid='StyledProductThumb']")
-        link = driver.find_element(By.XPATH, "//div[@data-testid='SearchResults']")
+if __name__ == "__main__":
+    s = time.perf_counter()
 
-        for i in range(int(kac)):
-            data.append({
-                'title' : title[i].text,
-                'price' : price[i].find_element(By.CSS_SELECTOR, 'span').text,
-                'picture' : picture[i].find_element(By.CSS_SELECTOR, 'div').find_element(By.CSS_SELECTOR, 'img').get_attribute('src'),
-                'link' : 'mercari.com' + link.find_elements(By.CSS_SELECTOR, 'a')[i].get_attribute('href')
-            })
+    asyncio.run(main(search_fields))
 
-    except NoSuchElementException:
-        title, price, picture, link = 'no data found'
-        data.append({
-            'title' : title,
-            'price' : price,
-            'picture' : picture,
-            'link' : link
-        })
-
-    return data
-
-
-print(search_mercari('iphone', 3))
-
-
-
-    
+    elapsed = time.perf_counter() - s
+    print(f"Executed in {elapsed:0.2f} seconds.")

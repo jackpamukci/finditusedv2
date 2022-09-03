@@ -6,8 +6,13 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def search_mercari(item, kac, dri):
-    driver = dri
+
+
+def search_mercari(item, kac):
+
+
+
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     url = f"https://www.mercari.com/search/?keyword={item}"
 
 
@@ -40,8 +45,6 @@ def search_mercari(item, kac, dri):
         })
 
     return data
-
-
 
 
 

@@ -52,9 +52,9 @@ def search_amazon(item, kac):
 
         print('something happened')
 
-    return data
+    print(data)
 
-search_amazon('skateboard', 3)
+search_amazon('fifa 22', 3)
 
 
     
