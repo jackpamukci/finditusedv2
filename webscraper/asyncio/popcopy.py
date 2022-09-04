@@ -1,6 +1,5 @@
 from requests_html import AsyncHTMLSession
 import asyncio
-from mercari_scraper import search_mercari
 import time
 
 

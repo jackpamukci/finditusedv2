@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-
 from popcopy import mano
 
 app = Flask(__name__)
