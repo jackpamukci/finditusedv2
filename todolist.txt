@@ -1,9 +1,8 @@
 backend
-+amazon info grabber
+-amazon info grabber
 +ebay scraper
-+mercari scraper
++newegg scraper
 +amazon scraper
-//walmart scraper aint work fuck em
 +flask rest api
 
 frontend
