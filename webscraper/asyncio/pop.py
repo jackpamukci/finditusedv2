@@ -16,7 +16,7 @@ async def ebay(s, search, kac):
     img = r.html.find(".s-item__image-img")
     link = r.html.find(".s-item__link")
 
-    for i in range(kac):
+    for i in range(int(kac)):
         data.append({
             'title' : title[i + 1].text,
             'price' : price[i + 1].text,
@@ -41,7 +41,7 @@ async def amazon(s, search, kac):
     imgs = r.html.xpath(".//img[@class = 's-image']")
     links = r.html.xpath(".//a[@class = 'a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal']")
 
-    for i in range(kac):
+    for i in range(int(kac)):
         if whole_price != [] and fraction_price != []:
             price = '.'.join([whole_price[i].text, fraction_price[i].text])
         else:
@@ -57,14 +57,40 @@ async def amazon(s, search, kac):
 
     return data
 #/////////////////////////////////////////////////////////
+async def newegg(s, search, kac):
+    url = f'https://www.newegg.com/p/pl?d={search}'
+
+    r = await s.get(url)
+
+    data = []
+
+    titles = r.html.find('.item-title')
+    price = r.html.find("li.price-current")
+    imgs = r.html.find("img[src]")
+
+    for i in range(int(kac)):
+
+        data.append({
+            'title' : titles[i + 5].text,
+            'price' : price[i].text,
+            'img' : imgs[i + 1].attrs['src'],
+            'link' : titles[i + 5].absolute_links
+        })
+
+    return data
+
+
 
 #/////////////////////////////////////////////////////////
 
 async def main(search, kac):
     s = AsyncHTMLSession()
-    # results = [ebay(s, search, 3), amazon(s, search, 3)]
-    return await asyncio.gather(ebay(s, search, kac),
-                        amazon(s, search, kac))
+    return await asyncio.gather({
+        'ebay' : ebay(s, search, kac),
+        # amazon(s, search, kac), 
+        # newegg(s, search, kac)
+                        })
+
 
 
 def getem(search, kac):
@@ -74,9 +100,7 @@ def getem(search, kac):
     results = loop.run_until_complete(main(search, kac))
     fub = time.perf_counter() - start
     print(fub)
-    return results[0]
+    print(results)
 
-print(getem('halo 3', 3))
-
-
+getem('fifa 22', 3)
     

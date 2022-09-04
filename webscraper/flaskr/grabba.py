@@ -27,12 +27,12 @@ def search_me(title, kac):
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
 
-    merc = search_mercari(title, kac, driver)
+    # merc = search_mercari(title, kac, driver)
 
     data = {
         'amazon' : search_amazon(title, kac, driver),
         'ebay' : search_ebay(title, kac, driver),
-        'mercari' : merc
+        # 'mercari' : merc
     }
 
     return data
